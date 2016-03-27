@@ -1,9 +1,12 @@
 ---
 layout: post
-title: For Rails
-category : Miscellanies
-tags : [Java, Ruby, Rails]
+title: For Starts
+category : Common
+tags : [Test, Common]
 ---
+
+这是一个中文实验。
+This is a test for English.
 
 我是一枚Java攻城狮，工作两年多，主要做Java Web开发，期间转去做了一年多的[Oracle DBA](http://dylanninin.com/blog/2013/10/26/oracle_dba.html)，维护[Oracle EBS](http://dylanninin.com/blog/2013/10/25/oracle_ebs.html)，也当过[Linux Administrator](http://dylanninin.com/blog/2013/10/25/linux.html)。
 
