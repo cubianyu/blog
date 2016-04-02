@@ -191,40 +191,6 @@ class Search(object):
         raise web.notfound(render.error(params))
 
 
-class Raw(object):
-    """
-    Raw Handler for /raw(.+)
-    example:
-        /raw
-            request the archive of raw formats of all posted entries on this blog
-                
-        /raw/
-            the same as /raw/
-                
-        /raw/2013/06/20/webpy_introduction.md
-            request the raw content with url 2013/06/20/webpy_introduction.md
-            and usually the rendered html url is 2013/06/20/webpy_introduction.html
-                
-        /raw/about.md
-            request the raw content with url about.md its rendered html url is /abouts.html
-                
-    reference:
-        config.py, model.py, service.py
-    """
-
-    def GET(self, url):
-        url = config.raw_url + url
-        raw = entryService.find_raw(url)
-        if not raw == None:
-            web.header('Context-Type', 'text/plain')
-            web.header('Content-Encoding', 'utf-8')
-            return raw
-        params = entryService.archive(entryService.types.raw, url)
-        if params.entries == None:
-            raise web.notfound(render.error(params))
-        return render.archive(params)
-
-
 class Image(object):
     """
     favicon.ico handler
