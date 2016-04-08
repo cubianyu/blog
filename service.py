@@ -23,6 +23,8 @@ from config import blogconfig as config
 from tool import Extract
 from model import Models
 
+from qiniu import Auth, BucketManager
+
 extract = Extract()
 
 
@@ -39,6 +41,9 @@ class EntryService(object):
         self.models = Models()
         self.types = self.models.types()
         self.params = self.models.params()
+        
+        self.qiniu = Auth(config.qiniuak, config.qiniusk)
+        self.bucket = BucketManager(self.qiniu)
         self._init_blog()
 
     def _init_blog(self):

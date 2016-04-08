@@ -45,6 +45,10 @@ blogconfig = web.storage(
     subscribe=10,
     cache=False,
     debug=True,
+
+    qiniuak="NkUONGzGToLApB1pAGWkwC8UTCQBZOxQuu5kLUNb",
+    qiniusk="d5e_GATBAwVQIyLD-iIZOuBoGjE7nYHOdBLOzL1g",
+    qiniubucket="cubianyu-blog",
 )
 
 web.config.debug = blogconfig.debug
