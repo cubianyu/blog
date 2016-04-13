@@ -143,24 +143,6 @@ class About(object):
         return render.entry(params)
 
 
-class Subscribe(object):
-    """
-    Subscribe Handler for /atom.xml
-    #TODO: FIXME: find related entries
-    
-    template:
-        template/subscribe.xml
-    
-    reference:
-        config.py, model.py, service.py
-    """
-
-    def GET(self):
-        params = entryService.search(entryService.types.index, config.subscribe_url)
-        web.header('Content-Type', 'text/xml')
-        return render.atom(params)
-
-
 class Search(object):
     """
     Search Handler for /search?type=type&value=value&start=start&limit=limit
