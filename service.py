@@ -16,6 +16,9 @@ import codecs
 import re
 import datetime
 import random
+import urllib
+import urllib2
+import requests
 
 import markdown
 
@@ -42,8 +45,9 @@ class EntryService(object):
         self.types = self.models.types()
         self.params = self.models.params()
         
-        self.qiniu = Auth(config.qiniuak, config.qiniusk)
-        self.bucket = BucketManager(self.qiniu)
+        self.qiniu = Auth(config.qiniu_ak, config.qiniu_sk)
+        self.blog_bucket = BucketManager(self.qiniu)
+        self.blog_prefix = "raw/"
         self._init_blog()
 
     def _init_blog(self):
@@ -53,13 +57,37 @@ class EntryService(object):
             - all pages in page_dir
             - others
         """
+        cloud_list = {}
+        ret, _, info = self.blog_bucket.list(config.qiniu_bucket, prefix = "raw/")
+        file_list = eval(info.text_body)["items"]
+        for f in file_list:
+            if f["key"].startswith(self.blog_prefix) and f["mimeType"] == "text/markdown":
+                file_name = f["key"][len(self.blog_prefix):]
+                print "Find qiniu file %s" %  file_name
+                cloud_list[file_name] = (f["key"], f["fsize"])
+        print cloud_list
+
         for root, _, files in os.walk(config.entry_dir):
             for f in files:
+                if f in cloud_list:
+                    del cloud_list[f]
                 self.add_entry(False, root + '/' + f)
+
+        for f in cloud_list:
+            info = cloud_list[f]
+            self._download_file(f, info[0])
+            self.add_entry(False, root + '/' + f)
+
         for root, _, files in os.walk(config.page_dir):
             for f in files:
                 self._add_page(root + '/' + f)
         self._init_miscellaneous(self.types.add, self.entries.values())
+
+    def _download_file(self, f, key):
+        base_url = 'http://%s/%s' % (config.qiniu_bucket_domain, key)
+        private_url = self.qiniu.private_download_url(base_url, expires=3600)
+        urllib.urlretrieve(private_url, "%s/%s" % (config.entry_dir, f))
+        print(private_url)
 
     def add_entry(self, inotified, path):
         """
