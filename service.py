@@ -70,12 +70,14 @@ class EntryService(object):
         for root, _, files in os.walk(config.entry_dir):
             for f in files:
                 if f in cloud_list:
+                    print "Find local file %s/%s" % (root, f)
                     del cloud_list[f]
                 self.add_entry(False, root + '/' + f)
 
         for f in cloud_list:
             info = cloud_list[f]
-            self._download_file(f, info[0])
+            self.download_file(f, info[0])
+            print "Download file %s/%s" % (root,f)
             self.add_entry(False, root + '/' + f)
 
         for root, _, files in os.walk(config.page_dir):
@@ -83,7 +85,7 @@ class EntryService(object):
                 self._add_page(root + '/' + f)
         self._init_miscellaneous(self.types.add, self.entries.values())
 
-    def _download_file(self, f, key):
+    def download_file(self, f, key):
         base_url = 'http://%s/%s' % (config.qiniu_bucket_domain, key)
         private_url = self.qiniu.private_download_url(base_url, expires=3600)
         urllib.urlretrieve(private_url, "%s/%s" % (config.entry_dir, f))
