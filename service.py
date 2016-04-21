@@ -107,6 +107,7 @@ class EntryService(object):
         """
         for entry in self.entries.values():
             if path == os.path.abspath(entry.path):
+                print "delete success!"
                 self.entries.pop(entry.url)
                 self._init_miscellaneous(self.types.delete, [entry])
 
